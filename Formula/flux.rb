@@ -2,8 +2,8 @@ class Flux < Formula
   desc "Lightweight scripting language for querying databases"
   homepage "https://www.influxdata.com/products/flux/"
   url "https://github.com/influxdata/flux.git",
-      tag:      "v0.125.0",
-      revision: "7043c60750bb4fc44eeea9b101d3fb3cd737e047"
+      tag:      "v0.126.0",
+      revision: "5daaedac25dfa11cf577e9a662e59e5c721f80ed"
   license "MIT"
   head "https://github.com/influxdata/flux.git"
 
@@ -13,11 +13,12 @@ class Flux < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "871883bdacfbf8e3983271b639128b0780eb0ec8ecf1414429eddf1d14ef5d01"
-    sha256 cellar: :any,                 big_sur:       "4b07501f101eb329c356147562750e16a238b7621e8c3f296fcc2f7aac1146c1"
-    sha256 cellar: :any,                 catalina:      "0f29432b99ea41aae92c9167bc05b91fe4356ebc5b3c9812179c54f18456074b"
-    sha256 cellar: :any,                 mojave:        "3acb0cc7e252605837fafe6c0c9b76b5e661cd53dcd132224931448e347d3cba"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "066791b4fce048ba230d1040fe4fb4ebcb83c75f959d94e14edad04a1ecaab47"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "8058fe7c0a930c5a0f93ab1a1d3c3524b1c7e06edc5a7f4f26ca1c20e2a0274d"
+    sha256 cellar: :any,                 big_sur:       "d0fa7eff1f68a3bf56b4e4d933689eca65e2b6dbcf56ee0f459141ccf0a67ad3"
+    sha256 cellar: :any,                 catalina:      "57280d055bf98d6f8dc7b5ad96582dbe550e6c68eb8f672345db1910f6b87036"
+    sha256 cellar: :any,                 mojave:        "db623af5b425e866861c679124c096827c7ca93110dfe4509f3debc7aea82e8b"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "51a683af64d00696c61363559f5244c294f3db73982921e2bf8c30fcd7f8d655"
   end
 
   depends_on "go" => :build
@@ -25,6 +26,13 @@ class Flux < Formula
 
   on_linux do
     depends_on "pkg-config" => :build
+  end
+
+  # Support go 1.17, remove when upstream patch is merged/released
+  # https://github.com/influxdata/flux/pull/3982
+  patch do
+    url "https://github.com/influxdata/flux/commit/233c875bcb7d071d47149b0730d1cb5f15eb6a5a.patch?full_index=1"
+    sha256 "fadb3ee0dc5efec615b6ffc4338f9a0947d42b58406b393587754fab0196ca62"
   end
 
   def install

@@ -4,7 +4,7 @@ class PopplerQt5 < Formula
   url "https://poppler.freedesktop.org/poppler-21.08.0.tar.xz"
   sha256 "e9cf5dc5964bce4bb0264d1c4f8122706c910588b421cfc30abc97d6b23e602d"
   license "GPL-2.0-only"
-  head "https://gitlab.freedesktop.org/poppler/poppler.git"
+  head "https://gitlab.freedesktop.org/poppler/poppler.git", branch: "master"
 
   livecheck do
     formula "poppler"
@@ -15,6 +15,7 @@ class PopplerQt5 < Formula
     sha256 big_sur:       "b90868c632e319845acf6412e280fd9ba07fa25b986415886ccfa95ee69e065c"
     sha256 catalina:      "7cd81e1ff43fbad733203084ea386bc1d7ecb04a29d958dd873592142dd161be"
     sha256 mojave:        "73d297ab2e685cb9af25373bf6d19fda06d1ecd20f9bcdd2f73abbc6127b79d0"
+    sha256 x86_64_linux:  "a19e3989ba8f77516a80d71562b5718a1a42b876c413b4017471d54896fc56e4"
   end
 
   keg_only "it conflicts with poppler"
@@ -37,6 +38,12 @@ class PopplerQt5 < Formula
 
   uses_from_macos "gperf" => :build
   uses_from_macos "curl"
+
+  on_linux do
+    depends_on "gcc"
+  end
+
+  fails_with gcc: "5"
 
   resource "font-data" do
     url "https://poppler.freedesktop.org/poppler-data-0.4.10.tar.gz"

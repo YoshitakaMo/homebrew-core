@@ -1,17 +1,17 @@
 class ArgocdVaultPlugin < Formula
   desc "Argo CD plugin to retrieve secrets from Secret Management tools"
-  homepage "https://github.com/IBM/argocd-vault-plugin"
+  homepage "https://ibm.github.io/argocd-vault-plugin"
   url "https://github.com/IBM/argocd-vault-plugin.git",
-      tag:      "v1.1.4",
-      revision: "57287c3b09b9b46fc0a2cc2b6344cdef5e01d2c4"
+      tag:      "v1.3.0",
+      revision: "733d62dd23ceb01a183d995799ba9e5566b08eeb"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "ff2832b21bdfcab32ccf9ade4848963917463fbb78acd1bed2d44d748c5a826c"
-    sha256 cellar: :any_skip_relocation, big_sur:       "a3b51c12f1df9561c372db2f99cd4f1500254522eace8b3a2df2ba448e939b6b"
-    sha256 cellar: :any_skip_relocation, catalina:      "a3b51c12f1df9561c372db2f99cd4f1500254522eace8b3a2df2ba448e939b6b"
-    sha256 cellar: :any_skip_relocation, mojave:        "a3b51c12f1df9561c372db2f99cd4f1500254522eace8b3a2df2ba448e939b6b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2863913ebae47cc22e5e703c442f795a3e11aca936e2d1d5946c129879f4161b"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "8eb93b97c954c6196323a06967552f7985d37d025f38ccd46b88262640cced52"
+    sha256 cellar: :any_skip_relocation, big_sur:       "ed64434e7217f2665d0f83c8dd1ced0cf8166db1be3cf1772903d8b25a9b6bd2"
+    sha256 cellar: :any_skip_relocation, catalina:      "ed64434e7217f2665d0f83c8dd1ced0cf8166db1be3cf1772903d8b25a9b6bd2"
+    sha256 cellar: :any_skip_relocation, mojave:        "ed64434e7217f2665d0f83c8dd1ced0cf8166db1be3cf1772903d8b25a9b6bd2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4ea7e8243a670979f3f57d3f46ec7f73d32f2305c67e585de86779f0a9a6c859"
   end
 
   depends_on "go" => :build
@@ -30,7 +30,7 @@ class ArgocdVaultPlugin < Formula
   end
 
   test do
-    assert_match "This is a plugin to replace <wildcards> with Vault secrets",
+    assert_match "This is a plugin to replace <placeholders> with Vault secrets",
       shell_output("#{bin}/argocd-vault-plugin --help")
 
     touch testpath/"empty.yaml"

@@ -2,8 +2,8 @@ class V8 < Formula
   desc "Google's JavaScript engine"
   homepage "https://github.com/v8/v8/wiki"
   # Track V8 version from Chrome stable: https://omahaproxy.appspot.com
-  url "https://github.com/v8/v8/archive/9.2.230.22.tar.gz"
-  sha256 "18be54a1aa6bf07fc704141c1450c4221f6443a63295bca8d0845be9248d798a"
+  url "https://github.com/v8/v8/archive/9.2.230.29.tar.gz"
+  sha256 "f5f2dd32533adf8b5746ff548dac583ca738c6f30c3315656cb4bec07dbdb178"
   license "BSD-3-Clause"
 
   livecheck do
@@ -12,11 +12,11 @@ class V8 < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_big_sur: "40fe7744bd7dd356f3ded64b55e3e41583601a5fa747df259bacbd251e161a8c"
-    sha256 cellar: :any,                 big_sur:       "68faad4ab0421a40086d0187e48dea562d1f429499073a93b653ac261f38e2b1"
-    sha256 cellar: :any,                 catalina:      "3ce161a6680de885fd14d4c419ccc0a6061d75dbe4c2e94ac2f402004212f878"
-    sha256 cellar: :any,                 mojave:        "6af3d70c93d53e095363fa0ccf7a4e2e725cfef3ca0b7584ebe32a653460cb72"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "af6919d3fb249b607ee98e1dba60ecb70b53c2ce07db1cf33eb8f917950f51ad"
+    sha256 cellar: :any,                 arm64_big_sur: "aad409632509a5f9e4dcf91c7243be1f45ca360326999e0b6c27b550e32516d5"
+    sha256 cellar: :any,                 big_sur:       "3b01fa5a33830ff0f8665f8a990a8f529321272ab47a1688f34b0d2045b0f30e"
+    sha256 cellar: :any,                 catalina:      "0e989e775ac4806be39c86c3bb0da5af78978c69c67694d75b64f8db15eb5ac9"
+    sha256 cellar: :any,                 mojave:        "d1a19c04b038e6b31a6e562dd5cf61b60b5aa3735465e94bcaa200189dbe72a0"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b45b5bbb9203cec58e70aaaa20da6aeb882cc6378959850a4b00cc8b4301c424"
   end
 
   depends_on "ninja" => :build
@@ -36,13 +36,13 @@ class V8 < Formula
   fails_with gcc: "5"
 
   # Look up the correct resource revisions in the DEP file of the specific releases tag
-  # e.g. for CIPD dependency gn: https://github.com/v8/v8/blob/9.2.230.22/DEPS#L47
+  # e.g. for CIPD dependency gn: https://github.com/v8/v8/blob/9.2.230.29/DEPS#L47
   resource "gn" do
     url "https://gn.googlesource.com/gn.git",
         revision: "39a87c0b36310bdf06b692c098f199a0d97fc810"
   end
 
-  # e.g.: https://github.com/v8/v8/blob/9.2.230.22/DEPS#L88 for the revision of build for v8 9.2.230.22
+  # e.g.: https://github.com/v8/v8/blob/9.2.230.29/DEPS#L88 for the revision of build for v8 9.2.230.29
   resource "v8/build" do
     url "https://chromium.googlesource.com/chromium/src/build.git",
         revision: "4036cf1b17581f5668b487a25e252d56e0321a7f"

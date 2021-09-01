@@ -7,10 +7,11 @@ class OpenjdkAT8 < Formula
   license "GPL-2.0-only"
 
   bottle do
-    sha256 cellar: :any,                 big_sur:      "13706fb4f8d0f693d14c250a97ec8b70b353018e197412165352c73954892c62"
-    sha256 cellar: :any,                 catalina:     "94c61774bdb17d7b8807974aea64c570776eb43dbf269c59767d9c35f4b86318"
-    sha256 cellar: :any,                 mojave:       "97022886f017f84800a97b5da48d8e268c5a3fcba498528fd7d24cd3e72d7a34"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "5f56edc9a69e19e16994caae04b9607bd1b337ddeb32aefbe13155ce609f1545"
+    rebuild 1
+    sha256 cellar: :any,                 big_sur:      "b13d2fe2ec9a4fe98ffcfb9c7b4e7a9307b12d8e999d08b88dac35eed211e459"
+    sha256 cellar: :any,                 catalina:     "2268eefc71327f9784a1a5a7ddbf17e14e50485d78bce0a856763d91dcff4ce0"
+    sha256 cellar: :any,                 mojave:       "c45c00f59218eca6e8ba55a082be6048ac30d7b13236debbc3787d3ca947b55c"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "ef63be9c490a22a106579b82d30086d34fc8b5cad1087d0bc5223116c17bb5af"
   end
 
   keg_only :versioned_formula
@@ -78,13 +79,20 @@ class OpenjdkAT8 < Formula
       inreplace "hotspot/make/linux/makefiles/gcc.make", "-Xlinker -O1", ""
     end
 
-    args = %W[--with-boot-jdk-jvmargs=#{java_options}
-              --with-boot-jdk=#{boot_jdk}
-              --with-debug-level=release
-              --with-jvm-variants=server
-              --with-milestone=fcs
-              --with-native-debug-symbols=none
-              --with-update-version=#{update}]
+    args = %W[
+      --with-boot-jdk-jvmargs=#{java_options}
+      --with-boot-jdk=#{boot_jdk}
+      --with-debug-level=release
+      --with-conf-name=release
+      --with-jvm-variants=server
+      --with-milestone=fcs
+      --with-native-debug-symbols=none
+      --with-update-version=#{update}
+      --with-vendor-bug-url=#{tap.issues_url}
+      --with-vendor-name=#{tap.user}
+      --with-vendor-url=#{tap.issues_url}
+      --with-vendor-vm-bug-url=#{tap.issues_url}
+    ]
 
     on_macos do
       args << "--with-toolchain-type=clang"
@@ -101,9 +109,7 @@ class OpenjdkAT8 < Formula
     end
 
     on_linux do
-      args += %W[CC=#{ENV.cc}
-                 CXX=#{ENV.cxx}
-                 --with-toolchain-type=gcc
+      args += %W[--with-toolchain-type=gcc
                  --x-includes=#{HOMEBREW_PREFIX}/include
                  --x-libraries=#{HOMEBREW_PREFIX}/lib
                  --with-cups=#{HOMEBREW_PREFIX}
@@ -116,31 +122,32 @@ class OpenjdkAT8 < Formula
     system "./configure", *args
 
     ENV["MAKEFLAGS"] = "JOBS=#{ENV.make_jobs}"
-    system "make", "images"
+    system "make", "bootcycle-images", "CONF=release"
 
-    on_macos do
-      jdk = Dir["build/*/images/j2sdk-bundle/*"].first
-      libexec.install jdk => "openjdk.jdk"
-      bin.install_symlink Dir[libexec/"openjdk.jdk/Contents/Home/bin/*"]
-      include.install_symlink Dir[libexec/"openjdk.jdk/Contents/Home/include/*.h"]
-      include.install_symlink Dir[libexec/"openjdk.jdk/Contents/Home/include/darwin/*.h"]
-      man1.install_symlink Dir[libexec/"openjdk.jdk/Contents/Home/man/man1/*"]
-    end
+    cd "build/release/images" do
+      jdk = libexec
 
-    on_linux do
-      libexec.install Dir["build/*/images/j2sdk-image/*"]
-      bin.install_symlink Dir[libexec/"bin/*"]
-      include.install_symlink Dir[libexec/"include/*.h"]
-      include.install_symlink Dir[libexec/"include/linux/*.h"]
-      man1.install_symlink Dir[libexec/"man/man1/*"]
+      on_macos do
+        libexec.install Dir["j2sdk-bundle/*"].first => "openjdk.jdk"
+        jdk /= "openjdk.jdk/Contents/Home"
+      end
+
+      on_linux { libexec.install Dir["j2sdk-image/*"] }
+
+      bin.install_symlink Dir[jdk/"bin/*"]
+      include.install_symlink Dir[jdk/"include/*.h"]
+      include.install_symlink Dir[jdk/"include/*/*.h"]
+      man1.install_symlink Dir[jdk/"man/man1/*"]
     end
   end
 
   def caveats
-    <<~EOS
-      For the system Java wrappers to find this JDK, symlink it with
-        sudo ln -sfn #{opt_libexec}/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
-    EOS
+    on_macos do
+      <<~EOS
+        For the system Java wrappers to find this JDK, symlink it with
+          sudo ln -sfn #{opt_libexec}/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
+      EOS
+    end
   end
 
   test do

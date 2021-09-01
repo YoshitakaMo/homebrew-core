@@ -1,8 +1,9 @@
 class OryHydra < Formula
   desc "OpenID Certified OAuth 2.0 Server and OpenID Connect Provider"
   homepage "https://www.ory.sh/hydra/"
-  url "https://github.com/ory/hydra/archive/v1.10.3.tar.gz"
-  sha256 "5922307e85895c0058d3af366f2b3f279d225bb311b07527364357801e0a2c91"
+  url "https://github.com/ory/hydra.git",
+    tag:      "v1.10.6",
+    revision: "f1771f13dd954b37330d4e90d89df41fc40be460"
   license "Apache-2.0"
 
   livecheck do
@@ -11,11 +12,11 @@ class OryHydra < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "ba879bc22ba2d3782990c6c9d8145c7b37709c9cab99d36c15b8ae2cae08cb0d"
-    sha256 cellar: :any_skip_relocation, big_sur:       "1a1c64b5f91606768b4936dff612e82cec33b61a4ffeeb7ec2482a409d41c19f"
-    sha256 cellar: :any_skip_relocation, catalina:      "d946e68b627af085c42aec6a4466cfcee394e5db905a1c1191732729241319f9"
-    sha256 cellar: :any_skip_relocation, mojave:        "70f7583e99d4cd3f0c0b88c6498351bfab099f8a58b7c6856ec003582bff176e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b5f185f604a0a7d563cf645f49ec21a4d98293cc6e1a9c8c63678824b10a4039"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "bf42109921a8c635c52c5ab98965e69c29705a031a14c55c70330516e470c815"
+    sha256 cellar: :any_skip_relocation, big_sur:       "0e722a796295f67092bb70106edee754d79e577f3d76c4a1332c4c5730da58f1"
+    sha256 cellar: :any_skip_relocation, catalina:      "33748c928aba61b2c11917f5118748dc566edf25a3f2f637a3f711dd637f0e22"
+    sha256 cellar: :any_skip_relocation, mojave:        "340958102c4350c52602fe9ac9a6707b716754d2f4280be4c37ca9f61113bd99"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f4b210ee85a24b7a6133fc5205af6a41bf187b3234ad4276780a55e24fe29cf5"
   end
 
   depends_on "go" => :build
@@ -23,11 +24,18 @@ class OryHydra < Formula
   conflicts_with "hydra", because: "both install `hydra` binaries"
 
   def install
-    ENV["GOBIN"] = bin
-    system "make", "install"
+    ldflags = %W[
+      -s -w
+      -X github.com/ory/hydra/driver/config.Version=v#{version}
+      -X github.com/ory/hydra/driver/config.Date=#{time.iso8601}
+      -X github.com/ory/hydra/driver/config.Commit=#{Utils.git_head}
+    ].join(" ")
+    system "go", "build", *std_go_args(ldflags: ldflags), "-tags", "sqlite", "-o", bin/"hydra"
   end
 
   test do
+    assert_match version.to_s, shell_output(bin/"hydra version")
+
     admin_port = free_port
     (testpath/"config.yaml").write <<~EOS
       dsn: memory

@@ -1,16 +1,16 @@
 class Meilisearch < Formula
   desc "Ultra relevant, instant and typo-tolerant full-text search API"
   homepage "https://docs.meilisearch.com/"
-  url "https://github.com/meilisearch/MeiliSearch/archive/v0.20.0.tar.gz"
-  sha256 "a3873f9bf180184c7b9cad0c6106daea9daea47643c130dc29b6d0a8206e9bda"
+  url "https://github.com/meilisearch/MeiliSearch/archive/v0.21.1.tar.gz"
+  sha256 "b924ca9e9436db56a07eef55025a2e7a8dcbfbba7207fd2f45beac81aa200501"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "98f84b8cc9e1a98ae5fd209602079c2877655fed22f357c8d87f04751286cc3a"
-    sha256 cellar: :any_skip_relocation, big_sur:       "55a6830696ba4b3fd3801be99180c95305e8b8d6c88e222068be8ecf528a1ca4"
-    sha256 cellar: :any_skip_relocation, catalina:      "2b6572a94c06b50750ecf5e9d2a39ec2fe502213f12c8efe10e0dbbba4b003af"
-    sha256 cellar: :any_skip_relocation, mojave:        "87df8e1be817662fce7d9a570bb1d0482edfe3338c7e642b2f2603436e2be236"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a82957fd490d1cf26a896dab2736561cdef8bd9ba44e0e48f62863f04f601c21"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "27bbe5bbc3a4f93b15240ee8303180c6d7dc5b9b195152122a0889d10e51e71b"
+    sha256 cellar: :any_skip_relocation, big_sur:       "1266c6ebcfcae9676d0166f145a5daf5cbd23c66ed693d7d29912d72407222bd"
+    sha256 cellar: :any_skip_relocation, catalina:      "db4732ab1d648d65555f810ddec93da00eab8d2228e416e1d79b9965acf48043"
+    sha256 cellar: :any_skip_relocation, mojave:        "fcad2c9a73787f7277f0ac5cf8a8175328be1eee053ecc08dcb237b5a6037945"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a31d13a7634b127a4ac918383f773a2685732c9c8b4c5b17cf75e493d2bc08b6"
   end
 
   depends_on "rust" => :build
@@ -21,35 +21,12 @@ class Meilisearch < Formula
     end
   end
 
-  plist_options manual: "meilisearch"
-
-  def plist
-    <<~EOS
-      <?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-      <plist version="1.0">
-        <dict>
-          <key>KeepAlive</key>
-          <false/>
-          <key>Label</key>
-          <string>#{plist_name}</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>#{opt_bin}/meilisearch</string>
-            <string>--db-path</string>
-            <string>#{var}/meilisearch/data.ms</string>
-          </array>
-          <key>RunAtLoad</key>
-          <true/>
-          <key>WorkingDirectory</key>
-          <string>#{var}</string>
-          <key>StandardErrorPath</key>
-          <string>#{var}/log/meilisearch.log</string>
-          <key>StandardOutPath</key>
-          <string>#{var}/log/meilisearch.log</string>
-        </dict>
-      </plist>
-    EOS
+  service do
+    run [opt_bin/"meilisearch", "--db-path", "#{var}/meilisearch/data.ms"]
+    keep_alive false
+    working_dir var
+    log_path var/"log/meilisearch.log"
+    error_log_path var/"log/meilisearch.log"
   end
 
   test do

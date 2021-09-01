@@ -4,10 +4,9 @@ class Samba < Formula
   # option. The shared folder appears in the guest as "\\10.0.2.4\qemu".
   desc "SMB/CIFS file, print, and login server for UNIX"
   homepage "https://www.samba.org/"
-  url "https://download.samba.org/pub/samba/stable/samba-4.14.5.tar.gz"
-  sha256 "bb6ef5d2f16b85288d823578abc453d9a80514c42e5a2ea2c4e3c60dc42335c3"
+  url "https://download.samba.org/pub/samba/stable/samba-4.14.7.tar.gz"
+  sha256 "6f50353f9602aa20245eb18ceb00e7e5ec793df0974aebd5254c38f16d8f1906"
   license "GPL-3.0-or-later"
-  revision 1
 
   livecheck do
     url "https://www.samba.org/samba/download/"
@@ -15,16 +14,17 @@ class Samba < Formula
   end
 
   bottle do
-    sha256 arm64_big_sur: "1a70bc9b661f27f9c9b9cab545e504f479c87b367fb78a2ee9d68ad77f687a8c"
-    sha256 big_sur:       "cbe5d63987f3afff71ed29f63b077a3c8f33f1eab38cc0a4419d4bbd0e01509e"
-    sha256 catalina:      "82f62e5d2f0b43d99caf957c63a0459ba741cb40aebb6ec1e96396448ae44b4d"
-    sha256 mojave:        "9364ca7435734f573707560b874f2296712c476d833e842a2153615d32285611"
+    sha256 arm64_big_sur: "83e55da85e036d9c11f731f97eb3ce9b0de3f28cc0bc01e324b047bc546d8cd3"
+    sha256 big_sur:       "c44dd26d0df5dbdf85c8f90a2260696eb1dc679580c6e2d77cdccc2588c53963"
+    sha256 catalina:      "af2d183b41b8f3b535ea5907e0dea211ddb59e3fa802cb88fc62678eb81c07fe"
+    sha256 mojave:        "3760fb40b1e0035a6483d972ba07d817b86f04ea92f9f17c50633fbd90341354"
   end
 
   # configure requires python3 binary to be present, even when --disable-python is set.
   depends_on "python@3.9" => :build
   depends_on "gnutls"
 
+  uses_from_macos "flex" => :build
   uses_from_macos "perl" => :build
 
   resource "Parse::Yapp" do

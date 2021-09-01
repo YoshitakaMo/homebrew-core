@@ -1,16 +1,16 @@
 class Lesspipe < Formula
   desc "Input filter for the pager less"
   homepage "https://www-zeuthen.desy.de/~friebel/unix/lesspipe.html"
-  url "https://github.com/wofr06/lesspipe/archive/1.87.tar.gz"
-  sha256 "554095bc1d27514ca5480295f3f49a635bd65fd899489ab43b2a6d356258ad6c"
-  license "GPL-2.0"
+  url "https://github.com/wofr06/lesspipe/archive/1.89.tar.gz"
+  sha256 "bc61afe1fc9a7d30904c03b5048720755e4d5585016ca56cd8a41fcf96b1eabe"
+  license "GPL-2.0-only"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_big_sur: "d64f78aa39d7efe3b82a8ed8d73dab156d835471d9a828231e5543ef6b2ee63c"
-    sha256 cellar: :any_skip_relocation, big_sur:       "d64f78aa39d7efe3b82a8ed8d73dab156d835471d9a828231e5543ef6b2ee63c"
-    sha256 cellar: :any_skip_relocation, catalina:      "d64f78aa39d7efe3b82a8ed8d73dab156d835471d9a828231e5543ef6b2ee63c"
-    sha256 cellar: :any_skip_relocation, mojave:        "d64f78aa39d7efe3b82a8ed8d73dab156d835471d9a828231e5543ef6b2ee63c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "78d4d1153a3e7ba606da746a311c539c82c64bc65bfd824a9aa4e483bd3c596a"
+    sha256 cellar: :any_skip_relocation, arm64_big_sur: "e1e2e8c6dfa12655279bc3a6d8869a71727f6fbc014796f9970f4b99bec879bc"
+    sha256 cellar: :any_skip_relocation, big_sur:       "e1e2e8c6dfa12655279bc3a6d8869a71727f6fbc014796f9970f4b99bec879bc"
+    sha256 cellar: :any_skip_relocation, catalina:      "e1e2e8c6dfa12655279bc3a6d8869a71727f6fbc014796f9970f4b99bec879bc"
+    sha256 cellar: :any_skip_relocation, mojave:        "e1e2e8c6dfa12655279bc3a6d8869a71727f6fbc014796f9970f4b99bec879bc"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a0ae934aea25951e3b5903b5bfbc3698e296d7ca7b30ed492b69aa7b1486f2a4"
   end
 
   def install
@@ -32,6 +32,6 @@ class Lesspipe < Formula
     system "tar", "-cvzf", "homebrew.tar.gz", "file1.txt", "file2.txt"
 
     assert_predicate testpath/"homebrew.tar.gz", :exist?
-    assert_match "file2.txt", shell_output("tar tvzf homebrew.tar.gz | #{bin}/tarcolor")
+    assert_match "file2.txt", pipe_output(bin/"tarcolor", shell_output("tar -tvzf homebrew.tar.gz"))
   end
 end
